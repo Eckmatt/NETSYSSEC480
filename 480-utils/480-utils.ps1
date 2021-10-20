@@ -20,41 +20,43 @@ Try{
 
 }
 Try{
-    $snapName = Read-Host "Enter the Name of "$vmName"'s Base Snapshot" 
+    $snapName = Read-Host "Enter the Name of "$vmName"'s Snapshot you wish to clone" 
     $snapshot=Get-Snapshot -VM $vm -Name $snapName -ErrorAction Stop
 }Catch{
     Write-Output "!!!Error!!! - Snapshot not found!"
 }Try{
     $dname = Read-Host "Enter the Name of the datastore you wish to store your clone: "
-    $dstore = Get-DataStore $dname -ErrorAction -Stop
+    $dstore = Get-DataStore -Name $dname -ErrorAction -Stop
 
 }Catch{
     Write-Output "!!!Error!!! - Datastore not found!"
 
 }Try{
     $hostname = Read-Host "Enter the Name of the esxi host you wish to store your clone: "
-    $vmhost = Get-VMHost $hostname -ErrorAction -Stop
+    $vmhost = Get-VMHost -Name $hostname -ErrorAction -Stop
 
 }Catch{
     Write-Output "!!!Error!!! - VM Host not found!"
-
-}Try{
+}
         
-    $choice = Read-Host "Create a Linked Clone or Full Clone? Enter [L/l] for Linked Clone or [F/f] for Full Clone"
-    If($choice -eq 'F' -or $choice -eq 'f' )
-    {
-        $Tempname = "{0}.temp" -f $vmName
-        $Tempvm = New-VM -Name $Tempname -VM $vm -LinkedClone -ReferenceSnapshot $snapshot -VMHost $vmhost -Datastore $dstore
-        $newname = Read-Host "Enter a name for your New VM"
+$choice = Read-Host "Create a Linked Clone or Full Clone? Enter [L/l] for Linked Clone or [F/f] for Full Clone"
+If($choice -eq 'F' -or $choice -eq 'f' )
+{
+    $Tempname = "{0}.temp" -f $vmName
+    $Tempvm = New-VM -Name $Tempname -VM $vm -LinkedClone -ReferenceSnapshot $snapshot -VMHost $vmhost -Datastore $dstore
+    $newname = Read-Host "Enter a name for your New VM"
 
-        $newvm = New-VM -Name $newname -VM $Tempvm -VMHost $vmhost -Datastore $dstore 
-        $newvm | new-snapshot -Name "Base"
-        $Tempvm | Remove-VM
+    $newvm = New-VM -Name $newname -VM $Tempvm -VMHost $vmhost -Datastore $dstore 
+    $newvm | new-snapshot -Name "Base"
+    $Tempvm | Remove-VM
 
-    }
-}Catch{
+}elseif ($choice -eq 'L' -or $choice -eq 'l' ) {
 
+    $newname = "{0}.linked" -f $vmName
+    $newvm = New-VM -Name $newname -VM $vm -LinkedClone -ReferenceSnapshot $snapshot -VMHost $vmhost -Datastore $dstore
 
+}else{
+    throw "Select Either [L]inked Clone or [F]ull Clone"
 }
 
 
