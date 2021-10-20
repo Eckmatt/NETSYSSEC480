@@ -1,15 +1,11 @@
-
-
 Try
 {
     $vserver= Read-Host "Please enter the FQDN or IP address of your Vcenter server: " 
-    $user = "riku"
-    $pass = "DuckHun+D0g"
-    Connect-VIServer($vserver) -User $user -Password $pass -ErrorAction Stop
+    Connect-VIServer($vserver) -ErrorAction Stop
 
 }Catch{
     Write-Output "!!!Error!!! - Could not connect to vCenter. Check your Vcenter server name and your Vcenter credentials."
-
+    
 }
 Try{
     $vmName = Read-Host "Enter the VM Name you wish to clone: "
@@ -17,26 +13,30 @@ Try{
 
 }Catch{
     Write-Output "!!!Error!!! - Enter an existing VM name"
-
+    exit
 }
 Try{
     $snapName = Read-Host "Enter the Name of "$vmName"'s Snapshot you wish to clone" 
     $snapshot=Get-Snapshot -VM $vm -Name $snapName -ErrorAction Stop
 }Catch{
     Write-Output "!!!Error!!! - Snapshot not found!"
+    exit
 }Try{
     $dname = Read-Host "Enter the Name of the datastore you wish to store your clone: "
-    $dstore = Get-DataStore -Name $dname -ErrorAction -Stop
+    $dstore = Get-DataStore $dname -ErrorAction Stop
+    
 
 }Catch{
-    Write-Output "!!!Error!!! - Datastore not found!"
+    Write-Warning $Error[0]
+    exit
 
 }Try{
     $hostname = Read-Host "Enter the Name of the esxi host you wish to store your clone: "
-    $vmhost = Get-VMHost -Name $hostname -ErrorAction -Stop
+    $vmhost = Get-VMHost -Name $hostname -ErrorAction Stop
 
 }Catch{
-    Write-Output "!!!Error!!! - VM Host not found!"
+    Write-Warning $Error[0]
+    exit
 }
         
 $choice = Read-Host "Create a Linked Clone or Full Clone? Enter [L/l] for Linked Clone or [F/f] for Full Clone"
