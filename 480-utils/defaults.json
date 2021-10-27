@@ -1,0 +1,10 @@
+{
+    "vCenterName": "vcenter.eckhardt.local",
+    "dstoreName": "datastore1",
+    "hostname": "192.168.3.22",
+    "FolderName": "BASE-VMS",
+    "groupName": "480-WAN"
+    
+
+
+}
