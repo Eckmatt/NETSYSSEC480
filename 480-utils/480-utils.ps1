@@ -107,6 +107,63 @@ Function pick_folder(){
 }
 
 
+function createNetwork () {
+    [CmdletBinding()]
+    param (
+        [string[]]$networkName = "blueX-LAN", [string[]]$esxiHost = "192.168.3.22", [string[]]$vcenterServer = "vcenter.eckhardt.local"
+
+    )
+    Connect-VIServer $vcenterServer -User riku
+    $newVSwitch = New-VirtualSwitch -Name $networkName -VMHost $esxiHost
+    $newPortGroup = New-VirtualPortGroup -Name $networkName -VirtualSwitch $newVSwitch
+
+}
+
+function pick_portgroup () {
+    Try{
+
+        $groupName = Read-Host "Enter the Name of the Port Group you wish to store your clone [$defaultConfig.groupName]"
+        if ([string]::IsNullOrWhiteSpace($groupName))
+        {
+            $portgroup = Get-VirtualPortGroup -Name $defaultConfig.groupName -ErrorAction Stop
+        }else{
+            $portgroup = Get-VirtualPortGroup -Name $groupName -ErrorAction Stop
+        }
+        
+        return $portgroup
+
+    }Catch{
+        Write-Warning $Error[0]
+        exit
+    }
+
+
+}
+
+function power_on(){
+
+    param(
+        $vm
+    )
+    Start-VM -VM $vm -Confirm -RunAsync
+
+}
+
+function setNetwork(){
+    param(
+        $vm
+    )
+    $adapters = Get-NetworkAdapter -VM $vm
+    foreach ($adapter in $adapters) {
+        $pickNetwork = pick_portgroup
+        Set-NetworkAdapter -NetworkAdapter $adapter -Portgroup $pickNetwork
+        
+    }
+
+
+}
+
+
 function cloner () {
     
     connect_server
@@ -124,50 +181,18 @@ function cloner () {
         $newname = Read-Host "Enter a name for your New VM"
 
         $newvm = New-VM -Name $newname -VM $Tempvm -VMHost $vmhost -Datastore $dstore -Location $folder
+        setNetwork -vm $newvm
         $newvm | new-snapshot -Name "Base"
         $Tempvm | Remove-VM
 
     }elseif ($choice -eq 'L' -or $choice -eq 'l' ) {
-
         $newname = "{0}.linked" -f $vm.Name
         $newvm = New-VM -Name $newname -VM $vm -LinkedClone -ReferenceSnapshot $snapshot -VMHost $vmhost -Datastore $dstore -Location $folder
+        setNetwork -vm $newvm
 
     }else{
         throw "Select Either [L]inked Clone or [F]ull Clone"
     }
-
-}
-
-function createNetwork () {
-    [CmdletBinding()]
-    param (
-        [string[]]$networkName = "blueX-LAN", [string[]]$esxiHost = "192.168.3.22", [string[]]$vcenterServer = "vcenter.eckhardt.local"
-
-    )
-    Connect-VIServer $vcenterServer -User riku
-    $newVSwitch = New-VirtualSwitch -Name $networkName -VMHost $esxiHost
-    $newPortGroup = New-VirtualPortGroup -Name $networkName -VirtualSwitch $newVSwitch
-
-}
-
-function pick_portgroup () {
-    Try{
-
-        $groupName = Read-Host "Enter the Name of the esxi host you wish to store your clone [$defaultConfig.groupName]"
-        if ([string]::IsNullOrWhiteSpace($groupName))
-        {
-            $portgroup = Get-VirtualPortGroup -Name $defaultConfig.groupName -ErrorAction Stop
-        }else{
-            $portgroup = Get-VirtualPortGroup -Name $groupName -ErrorAction Stop
-        }
-        
-        return $portgroup
-
-    }Catch{
-        Write-Warning $Error[0]
-        exit
-    }
-
 
 }
 #Try{}Catch{}
