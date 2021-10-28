@@ -2,13 +2,13 @@ $defaultConfig = Get-Content defaults.json | ConvertFrom-Json
 
 
 Function connect_server(){
-
+    $default = $defaultConfig.vCenterName
     Try
     {
-        $vserver= Read-Host "Please enter the FQDN or IP address of your Vcenter server [$defaultConfig.vCenterName]: "
-        if ([string]::IsNullOrWhiteSpace($vserver))
+        $vserver= Read-Host "Please enter the FQDN or IP address of your Vcenter server [$default]: "
+        if ([string]::IsNullOrWhiteSpace($default))
         {
-            Connect-VIServer($defaultConfig.vCenterName) -ErrorAction Stop
+            Connect-VIServer($default) -ErrorAction Stop
         }else{
             Connect-VIServer($vserver) -ErrorAction Stop
         }
@@ -47,11 +47,12 @@ Function pick_snapshot(){
 }
 }
 Function pick_datastore(){
+    $default =defaultConfig.dstoreName
     Try{
-        $dname = Read-Host "Enter the Name of the datastore you wish to store your clone [$defaultConfig.dstoreName]"
+        $dname = Read-Host "Enter the Name of the datastore you wish to store your clone [$default]"
         if ([string]::IsNullOrWhiteSpace($dname))
         {
-            $dstore = Get-DataStore $defaultConfig.dstoreName -ErrorAction Stop
+            $dstore = Get-DataStore $default -ErrorAction Stop
         }else{
             $dstore = Get-DataStore $dname -ErrorAction Stop
         }
@@ -65,12 +66,13 @@ Function pick_datastore(){
     }
 }
 Function pick_hostname(){
+    $default = $defaultConfig.hostname
     Try{
 
-        $hostname = Read-Host "Enter the Name of the esxi host you wish to store your clone [$defaultConfig.hostname]"
+        $hostname = Read-Host "Enter the Name of the esxi host you wish to store your clone [$default]"
         if ([string]::IsNullOrWhiteSpace($hostname))
         {
-            $vmhost = Get-VMHost -Name $defaultConfig.hostname -ErrorAction Stop
+            $vmhost = Get-VMHost -Name $default -ErrorAction Stop
         }else{
             $vmhost = Get-VMHost -Name $hostname -ErrorAction Stop
         }
@@ -85,15 +87,16 @@ Function pick_hostname(){
 }
 
 Function pick_folder(){
+    $default = $defaultConfig.FolderName
     param(
         $vmhost
     )
     Try{
 
-        $folderName = Read-Host "Enter the Name of the Folder you wish to store your clone [$defaultConfig.FolderName]"
+        $folderName = Read-Host "Enter the Name of the Folder you wish to store your clone [$defaultConfig]"
         if ([string]::IsNullOrWhiteSpace($folderName))
         {
-            $folder = Get-Folder -Name $defaultConfig.FolderName -ErrorAction Stop
+            $folder = Get-Folder -Name $default -ErrorAction Stop
         }else{
             $folder = Get-Folder -Name $folderName -ErrorAction Stop
         }
@@ -110,19 +113,20 @@ Function pick_folder(){
 function createNetwork () {
     [CmdletBinding()]
     param (
-        [string[]]$networkName = "blueX-LAN", [string[]]$esxiHost = "192.168.3.22", [string[]]$vcenterServer = "vcenter.eckhardt.local"
+        [string]$networkName = "blueX-LAN", [string]$esxiHost = "192.168.3.22", [string]$vcenterServer = "vcenter.eckhardt.local"
 
     )
-    Connect-VIServer $vcenterServer -User riku
+    conn
     $newVSwitch = New-VirtualSwitch -Name $networkName -VMHost $esxiHost
-    $newPortGroup = New-VirtualPortGroup -Name $networkName -VirtualSwitch $newVSwitch
+    New-VirtualPortGroup -Name $networkName -VirtualSwitch $newVSwitch
 
 }
 
 function pick_portgroup () {
+    $default = $defaultConfig.groupName
     Try{
 
-        $groupName = Read-Host "Enter the Name of the Port Group you wish to store your clone [$defaultConfig.groupName]"
+        $groupName = Read-Host "Enter the Name of the Port Group you wish to store your clone [$default]"
         if ([string]::IsNullOrWhiteSpace($groupName))
         {
             $portgroup = Get-VirtualPortGroup -Name $defaultConfig.groupName -ErrorAction Stop
@@ -163,6 +167,17 @@ function setNetwork(){
 
 }
 
+function getIP() {
+    param(
+        $Name
+
+    )
+    $vm = Get-VM -Name $Name
+    $getIPHostname = $vm.Name
+    $ipAddress = $vm.guest.IPAddress[0]
+    return "$ipAddress hostname=$getIPHostname"
+
+}
 
 function cloner () {
     
