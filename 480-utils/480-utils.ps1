@@ -6,7 +6,7 @@ Function connect_server(){
     Try
     {
         $vserver= Read-Host "Please enter the FQDN or IP address of your Vcenter server [$default]: "
-        if ([string]::IsNullOrWhiteSpace($default))
+        if ([string]::IsNullOrWhiteSpace($vserver))
         {
             Connect-VIServer($default) -ErrorAction Stop
         }else{
@@ -47,7 +47,7 @@ Function pick_snapshot(){
 }
 }
 Function pick_datastore(){
-    $default =defaultConfig.dstoreName
+    $default =$defaultConfig.dstoreName
     Try{
         $dname = Read-Host "Enter the Name of the datastore you wish to store your clone [$default]"
         if ([string]::IsNullOrWhiteSpace($dname))
@@ -93,7 +93,7 @@ Function pick_folder(){
     )
     Try{
 
-        $folderName = Read-Host "Enter the Name of the Folder you wish to store your clone [$defaultConfig]"
+        $folderName = Read-Host "Enter the Name of the Folder you wish to store your clone [$default]"
         if ([string]::IsNullOrWhiteSpace($folderName))
         {
             $folder = Get-Folder -Name $default -ErrorAction Stop
@@ -116,7 +116,7 @@ function createNetwork () {
         [string]$networkName = "blueX-LAN", [string]$esxiHost = "192.168.3.22", [string]$vcenterServer = "vcenter.eckhardt.local"
 
     )
-    conn
+    connect_server
     $newVSwitch = New-VirtualSwitch -Name $networkName -VMHost $esxiHost
     New-VirtualPortGroup -Name $networkName -VirtualSwitch $newVSwitch
 
