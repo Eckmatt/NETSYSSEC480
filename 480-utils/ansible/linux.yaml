@@ -13,7 +13,7 @@ linux:
           hostname: centos-3
           lan_ip: 10.0.5.12
   vars:
-    public_key:
+    public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCXXbSzT7Tpne/3VlsjMeSW9AY5/8U/E8Y4CPfk3AMBUTgPmCsvK46VOMJkGYRYBK6Yf/wygJwX/bIMh7DcSCrreLEa6FH7ZY8fNd9Vd9n2Q1kMyAGoRp4/WD15xsmgfBhxj9M/GxTR8HW6vyNJOn34RGukmXSN0hcoj92ysIPWwQGbxTGfwiSnSI0Uc7HkCmb6F5nplq3popmlADne/6HwEgga5EmYx8zagMz2tkPZpamxhoMeFN3PewSKA5n3dUBmZEVWKKcCzXaIbA3oRPxVAxDwez9BNiC+A/fAcJkGsrTzCG8CrHxg5WP8AULg7EQXRuX2KNwawk8J3PdtQaaHOEC1Bs5zOWzXNc7nqMcbHP5qxUmHXpkUZaRlt7lXbJYKPB2lptI+0mTZKUu+I5nLh9EeuLcUD5EFX1+i2opWIvtLk3yc99fP5a4sVEyuLgmB7anJnXjFkifNoR5XJJNjdue7glvW5TjQ/qOpEIFhmwNdb9g7l9B67USAAiUhaFU= sora@ubuntu
     ansible_user: deployer
     device: ens192
     prefix: 24
