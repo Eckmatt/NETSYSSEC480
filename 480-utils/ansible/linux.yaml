@@ -1,0 +1,22 @@
+linux:
+  hosts:
+  children:
+    centos:
+      hosts:
+        10.0.5.xx:
+          hostname: centos-1
+          lan_ip: 10.0.5.10
+        10.0.5.xx:
+          hostname: centos-2
+          lan_ip: 10.0.5.11
+        10.0.5.xx:
+          hostname: centos-3
+          lan_ip: 10.0.5.12
+  vars:
+    public_key:
+    ansible_user: deployer
+    device: ens192
+    prefix: 24
+    gateway: 10.0.5.2
+    name_server: 10.0.5.5
+    domain: blue1.local

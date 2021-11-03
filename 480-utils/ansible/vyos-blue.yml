@@ -9,7 +9,7 @@
       var: version.stdout_lines
 
   - name: configure vyos dhcp
-    vyos config:
+    vyos_config:
       save: yes
       lines:
       - set service dhcp-server global-parameters 'local-address {{ lan_ip }};'

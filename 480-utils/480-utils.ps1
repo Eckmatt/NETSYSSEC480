@@ -8,9 +8,9 @@ Function connect_server(){
         $vserver= Read-Host "Please enter the FQDN or IP address of your Vcenter server [$default]: "
         if ([string]::IsNullOrWhiteSpace($vserver))
         {
-            Connect-VIServer($default) -ErrorAction Stop
+            Connect-VIServer($default) -User riku -ErrorAction Stop
         }else{
-            Connect-VIServer($vserver) -ErrorAction Stop
+            Connect-VIServer($vserver) -User riku -ErrorAction Stop
         }
         
 
@@ -87,12 +87,9 @@ Function pick_hostname(){
 }
 
 Function pick_folder(){
-    $default = $defaultConfig.FolderName
-    param(
-        $vmhost
-    )
+    
     Try{
-
+        $default = $defaultConfig.FolderName
         $folderName = Read-Host "Enter the Name of the Folder you wish to store your clone [$default]"
         if ([string]::IsNullOrWhiteSpace($folderName))
         {
