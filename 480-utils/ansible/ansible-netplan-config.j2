@@ -1,0 +1,11 @@
+#Deployed via Ansible - NETSYSSEC480
+network:
+    version: 2
+    ethernets:
+        "{{ device }}":
+         address:
+         -  "{{ lan_ip }}/{{ prefix }}"
+         gateway4: "{{ gateway }}"
+         nameservers:
+            addresses:
+            - "{{ name_server }}"

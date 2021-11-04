@@ -170,9 +170,14 @@ function getIP() {
 
     )
     $vm = Get-VM -Name $Name
-    $getIPHostname = $vm.Name
-    $ipAddress = $vm.guest.IPAddress[0]
-    return "$ipAddress hostname=$getIPHostname"
+    foreach($eachVM in $vm){
+        
+        $getIPHostname = $eachVM.Name
+        $ipAddress = $eachVM.guest.IPAddress[0]
+        $IPs += "$ipAddress hostname=$getIPHostname`n"
+    }
+    return $IPs
+
 
 }
 
