@@ -51,8 +51,8 @@
       become: yes
   
 
-    - name: bounce the network
-      shell: "sleep 5 && systemctl restart network"
+    - name: restart the machine
+      shell: "sudo reboot"
       become: yes
       async: 1
       poll: 0
