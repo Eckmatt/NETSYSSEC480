@@ -1,0 +1,23 @@
+map $request_uri $upstreamserver {
+default         eckhardt;
+~transactionID.*    eckhardt2;
+}
+
+upstream eckhardt2 {
+    hash $binary_remote_addr$request_uri$args;
+
+    server 10.0.17.3:80;
+
+}
+upstream eckhardt {
+    server 10.0.17.3:80;
+
+}
+
+server {
+    listen 80;
+
+    location / {
+        proxy_pass http://$upstreamserver;
+    }
+}

@@ -1,5 +1,5 @@
-- name: ubuntu config
-  hosts: ubuntu
+- name: centos config
+  hosts: centos
   tasks:
     - name: create the .ssh directory if it is not there
       file:
@@ -40,20 +40,50 @@
         line: '127.0.1.1 {{ hostname }}'
       become: yes
 
-
     - name: push over the networking script
       template:
-        src: ansible-netplan-config.j2
-        dest: '/etc/netplan/00-installer-config.yaml'
+        src: /home/sora/NETSYSSEC480/480-utils/ansible/ifcfg.j2
+        dest: '/etc/sysconfig/network-scripts/ifcfg-{{device}}'
         mode: 0644
         owner: root
         group: root
         force: yes
       become: yes
-  
 
-    - name: restart networking
-      shell: "sudo netplan apply"
+    - name: push over nginx repo
+      template:
+        src: nginx.j2
+        dest: '/etc/yum.repos.d/nginx.repo'
+        mode: 0644
+        owner: root
+        group: root
+        force: yes
+      become: yes
+
+    - name: Update Yum
+      shell: "sudo yum update -y"
+      become: yes
+      async: 1
+      poll: 0
+
+    - name: Install nginx
+      yum:
+        name: nginx
+        state: latest
+      become_user: root
+    
+    - name: Push modified nginx.conf
+      template:
+        src: milestone9.j2
+        dest: '/etc/nginx/eckhardt.conf'
+        mode: 0644
+        owner: root
+        group: root
+        force: yes
+      become: yes
+
+    - name: restart nginx
+      shell: "sudo systemctl restart nginx && systemctl restart network"
       become: yes
       async: 1
       poll: 0

@@ -1,20 +1,19 @@
 linux:
   hosts:
   children:
-    ubuntu:
+    centos:
       hosts:
-        10.0.5.84:
-          hostname: ubuntu-1
-          lan_ip: 10.0.5.20
-        10.0.5.85:
-          hostname: ubuntu-2
-          lan_ip: 10.0.5.21
+        10.0.17.102:
+          hostname: guardian-1
+          lan_ip: 10.0.17.20
 
   vars:
     public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCXXbSzT7Tpne/3VlsjMeSW9AY5/8U/E8Y4CPfk3AMBUTgPmCsvK46VOMJkGYRYBK6Yf/wygJwX/bIMh7DcSCrreLEa6FH7ZY8fNd9Vd9n2Q1kMyAGoRp4/WD15xsmgfBhxj9M/GxTR8HW6vyNJOn34RGukmXSN0hcoj92ysIPWwQGbxTGfwiSnSI0Uc7HkCmb6F5nplq3popmlADne/6HwEgga5EmYx8zagMz2tkPZpamxhoMeFN3PewSKA5n3dUBmZEVWKKcCzXaIbA3oRPxVAxDwez9BNiC+A/fAcJkGsrTzCG8CrHxg5WP8AULg7EQXRuX2KNwawk8J3PdtQaaHOEC1Bs5zOWzXNc7nqMcbHP5qxUmHXpkUZaRlt7lXbJYKPB2lptI+0mTZKUu+I5nLh9EeuLcUD5EFX1+i2opWIvtLk3yc99fP5a4sVEyuLgmB7anJnXjFkifNoR5XJJNjdue7glvW5TjQ/qOpEIFhmwNdb9g7l9B67USAAiUhaFU= sora@ubuntu
-    ansible_user: kairi
-    device: ens160
+    ansible_user: deployer
+    device: ens192
+    os: centos
+    os_release: 7
     prefix: 24
-    gateway: 10.0.5.2
-    name_server: 10.0.5.5
-    domain: blue1.local
+    gateway: 10.0.17.2
+    name_server: 10.0.17.4
+    domain: eckhardt.local
