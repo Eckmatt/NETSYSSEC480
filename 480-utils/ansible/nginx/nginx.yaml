@@ -3,7 +3,7 @@ linux:
   children:
     centos:
       hosts:
-        10.0.17.102:
+        10.0.17.103:
           hostname: guardian-1
           lan_ip: 10.0.17.20
 
