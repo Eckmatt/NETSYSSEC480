@@ -1,0 +1,23 @@
+#adds static dhcp entry to vyos
+
+# ansible-playbook -i /blue1-fw/vyos2.yaml -ask-pass vyos-utils.yml
+- name: vyos network config
+  hosts: vyos
+  vars_prompt:
+  - name: mapping_name
+    prompt: "What do you want to call this mapping name? (hostname of the map target is a good idea)"
+    private: no
+  
+  - name: mac_address
+    prompt: "What Mac Address are you going to map?"
+    private: no
+  - name: ip_address
+    prompt: "What ip address do you want to map?"
+    private: no
+  tasks:
+  - name: configure vyos dhcp static mapping
+    vyos_config:
+      save: yes
+      lines:
+      - set service dhcp-server shared-network-name '{{ shared_network }}' subnet '{{ lan }}' static-mapping '{{ mapping_name }}' ip-address '{{ ip_address }}'
+      - set service dhcp-server shared-network-name '{{ shared_network }}' subnet '{{ lan }}' static-mapping '{{ mapping_name }}' mac-address '{{ mac_address }}'

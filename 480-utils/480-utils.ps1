@@ -173,8 +173,9 @@ function getIP() {
     foreach($eachVM in $vm){
         
         $getIPHostname = $eachVM.Name
+        $mac = ($eachVM | Get-NetworkAdapter)[0].MacAddress
         $ipAddress = $eachVM.guest.IPAddress[0]
-        $IPs += "$ipAddress hostname=$getIPHostname`n"
+        $IPs += "$ipAddress hostname=$getIPHostname mac=$mac`n"
     }
     return $IPs
 

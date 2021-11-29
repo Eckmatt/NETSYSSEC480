@@ -1,0 +1,17 @@
+windows:
+  hosts:
+  children:
+    servers:
+      hosts:
+        10.0.5.5:
+          hostname: dc-blue1
+          lan_ip: 10.0.5.10
+
+  vars:
+    ansible_user: deployer
+    device: Ethernet0
+    netmask: 255.255.255.0
+    gateway: 10.0.5.2
+    name_server: 10.0.5.5
+    domain: blue1.local
+    ansible_shell_type: powershell
