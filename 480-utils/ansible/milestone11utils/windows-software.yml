@@ -1,0 +1,41 @@
+- name: Install Software
+  hosts: workstations
+  gather_facts: no
+  tasks:
+  - name: Create 480 drectory
+    win_file:
+      path: C:\480
+      state: directory
+
+  - name: copy Firefox msi
+    win_copy:
+      src: Firefox-Setup.msi
+      dest: C:\480\Firefox-Setup.msi
+
+  - name: install Firefox
+    win_package:
+      path: C:\480\Firefox-Setup.msi
+      wait: yes
+      state: present
+
+  - name: copy PuttY msi
+    win_copy:
+      src: putty-64bit-0.76-installer.msi
+      dest: C:\480\putty-64bit-0.76-installer.msi
+
+  - name: install PuttY
+    win_package:
+      path: C:\480\putty-64bit-0.76-installer.msi
+      wait: yes
+      state: present
+
+  - name: copy Google Chrome
+    win_copy:
+      src: googlechromestandaloneenterprise64.msi
+      dest: C:\480\googlechromestandaloneenterprise64.msi
+
+  - name: install Google Chrome 
+    win_package:
+      path: C:\480\googlechromestandaloneenterprise64.msi
+      wait: yes
+      state: present

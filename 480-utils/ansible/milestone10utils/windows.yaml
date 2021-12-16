@@ -1,10 +1,24 @@
-windows:
+all:
   hosts:
   children:
     servers:
       hosts:
         10.0.5.5:
           hostname: dc-blue1
+        10.0.5.6:
+          hostname: fs01
+          lan_ip: 10.0.5.6
+      vars:
+        domain_ou_path: 'OU=servers,OU=computers,OU=blue1,DC=blue1,DC=local'
+    
+    workstations:
+      hosts:
+        10.0.5.101:
+          hostname: wks1
+        10.0.5.102:
+          hostname: wks2
+      vars:
+        domain_ou_path: 'OU=workstations,OU=computers,OU=blue1,DC=blue1,DC=local'
 
   vars:
     ansible_user: deployer
@@ -14,3 +28,4 @@ windows:
     name_server: 10.0.5.5
     domain: blue1.local
     ansible_shell_type: powershell
+    base_dc: blue1

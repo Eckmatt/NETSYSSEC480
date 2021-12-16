@@ -1,0 +1,17 @@
+- name: Windows Remote Access
+  hosts: workstations
+  vars_prompt:
+
+  tasks:
+  - name: Enable RDP (Registry)
+    win_shell: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -value 0
+
+  - name: Enable RDP (Firewall)
+    win_shell: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+
+  - name: Add Domain Admin to RDU
+    win_shell: Add-LocalGroupMember -Group "Remote Desktop Users" -Member "Administrator@blue1.local"
+
+  - name: Change to high performance
+    win_power_plan:
+      name: high performance

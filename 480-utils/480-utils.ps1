@@ -1,4 +1,4 @@
-$defaultConfig = Get-Content defaults.json | ConvertFrom-Json
+$defaultConfig = Get-Content "~/NETSYSSEC480/480-utils/defaults.json" | ConvertFrom-Json
 
 
 Function connect_server(){
